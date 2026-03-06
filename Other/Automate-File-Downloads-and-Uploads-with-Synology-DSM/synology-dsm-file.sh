@@ -98,7 +98,7 @@ upload_to_dsm()
             -H "X-SYNO-SHARING: ${sharing_id}" \
             -H "Cookie: sharing_sid=${sharing_sid}" \
             --data-raw "api=SYNO.FileStation.CheckPermission&method=write&version=3&filename=%22${filename}%22&size=${filesize}&overwrite=true&sharing_id=%22${sharing_id}%22&uploader_name=%22${sharing_folder}%22" 2>/dev/null)
-        has_write_permission=$(echo ${response} | sed -n 's/"success":true/\1/p')
+        has_write_permission=$(echo ${response} | grep '"success":true')
         if [ ! -z "${has_write_permission}" ]; then
             # upload file with curl
             response=$(curl -kvL \
@@ -109,7 +109,7 @@ upload_to_dsm()
                 -F "sharing_id=${sharing_id}" \
                 -F "uploader_name=${sharing_folder}" \
                 -F "files=@${upload_filepath}" 2>/dev/null)
-            upload_successed=$(echo ${response} | sed -n 's/"success":true/\1/p')
+            upload_successed=$(echo ${response} | grep '"success":true')
             if [ ! -z "${upload_successed}" ]; then
                 return 0
             fi
